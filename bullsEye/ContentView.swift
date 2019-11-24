@@ -17,6 +17,50 @@ struct ContentView: View {
     @State var score = 0
     @State var round = 1
     
+    let midnightBlue = Color(red: 25.0/250.0, green: 51.0/255.0, blue: 102.0/255.0)
+    
+    /* VIEW MODIFIERS*/
+    struct LabelStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.white)
+                .modifier(Shadow())
+                .font(Font.custom("Arial Rounded MT Bold", size: 18))
+        }
+    }
+    
+    struct ValueStyle: ViewModifier {
+        func body(content: Content) -> some View{
+            return content
+            .foregroundColor(Color.yellow)
+            .modifier(Shadow())
+            .font(Font.custom("Arial Rounded MT Bold", size: 24))
+        }
+    }
+    
+    struct ButtonLargeTetStyle: ViewModifier {
+          func body(content: Content) -> some View{
+              return content
+              .foregroundColor(Color.black)
+              .font(Font.custom("Arial Rounded MT Bold", size: 18))
+          }
+      }
+    
+    struct ButtonSmallTetStyle: ViewModifier {
+           func body(content: Content) -> some View{
+               return content
+               .foregroundColor(Color.black)
+               .font(Font.custom("Arial Rounded MT Bold", size: 12))
+           }
+       }
+    
+    struct Shadow: ViewModifier {
+        func body(content: Content) -> some View{
+            return content
+            .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+        }
+    }
+    
     /* METHODS */
     func sliderValueRounded() -> Int {
         return Int(self.sliderValue.rounded())
@@ -68,16 +112,16 @@ struct ContentView: View {
             Spacer()
             // TARGET ROW
             HStack {
-                Text("Put the bullseye as close as you can to:")
-                Text("\(self.target)")
+                Text("Put the bullseye as close as you can to:").modifier(LabelStyle())
+                Text("\(self.target)").modifier(ValueStyle())
             }
             Spacer()
             
             // SLIDER ROW
             HStack{
-                Text("1")
-                Slider(value: self.$sliderValue, in: 1...100)
-                Text("100")
+                Text("1").modifier(LabelStyle())
+                Slider(value: self.$sliderValue, in: 1...100).accentColor(Color.green)
+                Text("100").modifier(LabelStyle())
             }
             Spacer()
             
@@ -88,7 +132,7 @@ struct ContentView: View {
                 self.alertIsVisible = true
                 
             }) {
-                Text("Hit Me")
+                Text("Hit Me").modifier(ButtonLargeTetStyle())
             }
             // Alert pop-up
             .alert(isPresented: $alertIsVisible) { () -> Alert in
@@ -102,6 +146,7 @@ struct ContentView: View {
                                 self.round += 1
                     })
             }
+            .background(Image("Button")).modifier(Shadow())
             Spacer()
          
             // SCORE ROW
@@ -109,21 +154,32 @@ struct ContentView: View {
                 Button(action: {
                     self.startNewGame()
                 }) {
-                    Text("Start Over")
+                    HStack {
+                        Image("StartOverIcon")
+                        Text("Start Over").modifier(ButtonSmallTetStyle())
+                    }
                 }
+                .background(Image("Button")).modifier(Shadow())
                 Spacer()
-                Text("Score:")
-                Text("\(self.score)")
+                Text("Score:").modifier(LabelStyle())
+                Text("\(self.score)").modifier(ValueStyle())
                 Spacer()
-                Text("Round:")
-                Text("\(self.round)")
+                Text("Round:").modifier(LabelStyle())
+                Text("\(self.round)").modifier(ValueStyle())
                 Spacer()
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                    Text("Info")
+                NavigationLink(destination: AboutView()) {
+                    HStack {
+                        Image("InfoIcon")
+                        Text("Info").modifier(ButtonSmallTetStyle())
+                    }
                 }
+                .background(Image("Button")).modifier(Shadow())
             }
             .padding(.bottom, 20)
         }
+        .background(Image("Background"), alignment: .center)
+        .accentColor(midnightBlue)
+        .navigationBarTitle("Bullseye")
     }
 }
 
